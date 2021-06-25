@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <style type="text/css">
+      body { background: #99BADD } /* Adding !important forces the browser to overwrite the default style applied by Bootstrap */
+    </style>
+  </head>
+  <body>
+<nav style="padding-left: 3%" class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="#">
+    <img src="https://coursera-university-assets.s3.amazonaws.com/ab/ad0b29abb58dcf290a091074bcca24ce/OldWell.png" width="30" height="30" class="d-inline-block float-right rounded align-top" alt="">
+    UNC MTC Simplifier
+  </a>
+</nav>
+
+<div class="toast" style="margin-top: 10px; margin-bottom: 10px;" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header">
+    <img id="status_image" src="https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-green-check-mark-icon-flat-style-png-image_1986021.jpg" class="rounded mr-2" style="width: 30px; height: 30px;">
+    <strong id="toast_header" class="me-auto"></strong>
+    <small id="status_time"></small>
+    <!-- <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button> -->
+  </div>
+</div>
+
+        
+<div style="background: white;" class="accordion" id="accordionExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        At-A-Glance
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <table id="primary_table" class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Metric</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>Word Count</td>
+              <td id="word_count"></td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>Sentence Length</td>
+              <td id="sentence_length"></td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>Syllables/Word</td>
+              <td id="syllables_word"></td>
+            </tr>
+            <tr>
+              <th scope="row">4</th>
+              <td>&lt;3000 Ratio</td>
+              <td id="top_3000"></td>
+            </tr>
+            <tr>
+              <th scope="row">5</th>
+              <td>Type-Token</td>
+              <td id="type_token"></td>
+            </tr>
+            <tr>
+              <th scope="row">6</th>
+              <td>Flesch-Kincaid</td>
+              <td id="flesch_kincaid"></td>
+            </tr>
+            <tr>
+              <th scope="row">7</th>
+              <td>Flesch-Reading</td>
+              <td id="flesch_reading"></td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- Add Button for copy to clipboard -->
+        <button id="clipboard_button" type="button" class="btn btn-success">Copy to Clipboard</button>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Extra Information
+      </button>
+    </h2>
+    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <h5>Word Frequency</h5>
+        <p>These are the word frequencies as sorted by U-Score.</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Range</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>&lt;500</td>
+              <td id="lt500"></td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>500-3000</td>
+              <td id="lt3000"></td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>&gt;3000</td>
+              <td id="gt3000"></td>
+            </tr>
+          </tbody>
+        </table>     
+        <div style="margin-bottom: 20px;" class="progress">
+          <div  id="lt500-bar" class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">&lt;500</div>
+          <div id="lt3000-bar" class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">&lt;3000</div>
+          <div id="gt3000-bar" class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">&gt;3000</div>
+        </div>
+
+
+
+        <h5>Type-Token Ratio</h5>
+        <p>This is the ratio of the number of unique words to the total number of words in the document.</p>
+        <div style="margin-bottom: 20px;" class="progress">
+          <div id="uni-bar" class="progress-bar bg-danger" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+          <div id="total-bar" class="progress-bar bg-info" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Total</div>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        Instructions
+      </button>
+    </h2>
+    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <p><strong>Bold Words</strong> are the words outside the top 3000 words in the English Language.</p>
+        <p><u>Underlined Sentences</u> are those which exceed the average sentence length in the document.</p>
+        <p>The <mark>add-on automatically detects changes</mark> in the document and refreshes itself.</p>
+        <p><strong>Contact</strong><br>Gary Bishop: <br><strong>gb@cs.unc.edu</strong> <br>Alfred Mathew: <br><strong>alfmat@live.unc.edu<br></strong> for any suggestions, questions, or concerns!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+    
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    
+    
+    <!-- Custom Script -->
+    <script>
+
+      // state variables
+      let cache = "";
+      let updateRequired = 1;
+
+      // on-load function
+      $(
+        function() {
+          $(".toast").toast({
+            "autohide": false
+          })
+          $(".toast").toast("show");
+          updateAlert(5);
+
+          // reset formatting
+          google.script.run.formatReset();
+
+          // initial execution
+          getStarted();
+        }
+      )
+
+      $("#clipboard_button").on("click", function() {
+        let table = document.getElementById("primary_table");
+        let range = document.createRange();
+        range.selectNode(table);
+        window.getSelection().addRange(range);
+        document.execCommand("copy");
+        window.getSelection().removeAllRanges();
+      });
+
+      function updateStats() {
+        // show status is updating
+        updateAlert(1);
+
+        google.script.run.withSuccessHandler(
+          function(data) {
+            // fill-in extension main page
+            $("#word_count").html(`<code>${data.word_count}</code>`);
+            $("#sentence_length").html(`<code>${data.avg_sentence.toFixed(2)}</code>`);
+            $("#syllables_word").html(`<code>${data.syllables_word.toFixed(2)}</code>`);
+            $("#top_3000").html(`<code>${((data.frequencies.lt500 + data.frequencies.lt3000)/data.word_count).toFixed(2)}</code>`);
+            $("#type_token").html(`<code>${data.type_token.toFixed(2)}</code>`);
+            $("#flesch_kincaid").html(`<code>${data.flesch_kincaid.toFixed(2)}</code>`);
+            $("#flesch_reading").html(`<code>${data.flesch_reading.toFixed(2)}</code>`);
+
+            // extra information
+            
+            Object.keys(data.frequencies).forEach((key) => {
+              let keyFreq = data.frequencies[key] / data.word_count;
+              $(`#${key}`).html(`<code>${keyFreq.toFixed(2)}</code>`);
+              $(`#${key}-bar`).css({"width":`${Math.round(keyFreq*100)}%`});
+            })
+
+            let typeToken = Math.round(data.type_token * 100);
+            $("#uni-bar").css({"width": `${typeToken}%`})
+            $("#uni-bar").html(`${typeToken}%`);
+            $("#total-bar").css({"width": `${100 - typeToken}%`})
+
+            // update status
+            updateAlert(2);
+
+            // set cursor to arbitrary value
+            updateRequired = 0;
+            cache = data.original_doc;
+
+            // reset clipboard button
+            // $("#clipboard_button").html("Copy to Clipboard")
+          }
+        ).withFailureHandler(
+          function(data) {
+            // if we encounter some error
+            console.log(data);
+            if(cache.length < 10) {
+              updateAlert(4);
+              updateRequired = 0;
+            } else {
+              updateAlert(3);
+              updateRequired = 0;
+            }
+          }
+        ).processDocument();
+      }
+
+      /*
+      status values:
+      - 1: updating...
+      - 2: success
+      - 3: failure
+      */
+      function updateAlert(status) {
+        if(status == 1) {
+          $("#toast_header").html("<strong>Updating...</strong>");
+        } else if(status == 2) {
+          let date = new Date();
+          let hour = date.getHours();
+          let originalHour = hour;
+          hour = !hour ? 12 : hour;
+          let mins = date.getMinutes();
+          $("#status_time").html(`${hour > 12 ? hour-12 : hour}:${mins < 10 ? "0"+mins : mins} ${originalHour >= 12 ? "P.M." : "A.M."}`);
+          $("#toast_header").html("Success!");
+          $("#status_image").attr({
+            src: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-green-check-mark-icon-flat-style-png-image_1986021.jpg"
+          });
+        } else if(status == 3){
+          $("#toast_header").html("Error: Continue typing to refresh. If issue persists then Contact <em>gb@cs.unc.edu</em>!");
+          $("#status_image").attr({
+            src: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/cross-mark-sign-template-design-9a328821d28fe9020c2a0e12e3689f97_screen.jpg?ts=1594383140"
+          });
+        } else if(status == 4) {
+          $("#toast_header").html("Mostly Empty Document, Add Text to Update Stats");
+          $("#status_image").attr({
+            src: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-green-check-mark-icon-flat-style-png-image_1986021.jpg"
+          });
+        } else {
+          $("#toast_header").html("Starting App...");
+          $("#status_image").attr({
+            src: "https://png.pngtree.com/png-vector/20191113/ourmid/pngtree-green-check-mark-icon-flat-style-png-image_1986021.jpg"
+          });
+        }
+      }
+
+      function getStarted() {
+       setInterval(function() {
+          google.script.run.withSuccessHandler(
+            function(data) {
+              if(!data.length) {
+                updateAlert(4);
+              } else if(data.length != cache.length && data.length > 0) {
+                cache = data;
+                updateRequired = 1;
+              } else {
+                if(updateRequired) {
+                  updateStats();
+                }
+              }
+          }).getDocument();
+        }, 1000)
+      }
+      
+
+    </script>
+  </body>
+
+</html>
